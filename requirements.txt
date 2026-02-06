@@ -2,3 +2,4 @@ mlflow
 scikit-learn
 databricks-cli
 pandas
+pyspark
