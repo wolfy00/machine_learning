@@ -20,24 +20,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Get Azure AD access token for Databricks
+      steps:
+      - name: Run Databricks Job
         run: |
-          response=$(curl -s -X POST \
-            "https://login.microsoftonline.com/${{ secrets.TENANT_ID }}/oauth2/v2.0/token" \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "client_id=${{ secrets.CLIENT_ID }}" \
-            -d "client_secret=${{ secrets.DATABRICKS_TOKEN }}" \
-            -d "grant_type=client_credentials" \
-            -d "scope=2ff814a6-3304-4ab8-85cb-cd0e6f879c1d/.default")
- 
-          echo "ACCESS_TOKEN=$(echo $response | jq -r .access_token)" >> $GITHUB_ENV
- 
-      - name: Trigger Databricks Job
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer $ACCESS_TOKEN" \
+          curl -X POST "$DATABRICKS_HOST/api/2.1/jobs/run-now" \
+            -H "Authorization: Bearer $DATABRICKS_TOKEN" \
             -H "Content-Type: application/json" \
-            ${{ secrets.DATABRICKS_HOST }}/api/2.1/jobs/run-now \
             -d '{
-              "job_id": '${{ secrets.JOB_ID }}'
+              "job_id": '"$DATABRICKS_JOB_ID"'
             }'
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_JOB_ID: ${{ secrets.JOB_ID }}
