@@ -26,7 +26,7 @@ jobs:
             -H "Authorization: Bearer $DATABRICKS_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
-              "job_id": '"$DATABRICKS_JOB_ID"'
+              "job_id": '"$JOB_ID"'
             }'
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
