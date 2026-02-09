@@ -19,8 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-
-      steps:
+          
       - name: Run Databricks Job
         run: |
           curl -X POST "$DATABRICKS_HOST/api/2.1/jobs/run-now" \
